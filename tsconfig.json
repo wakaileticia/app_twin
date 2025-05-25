@@ -1,10 +1,25 @@
 {
-  "extends": "./node_modules/expo/tsconfig.base.json",
+  "extends": "./node_modules/expo/tsconfig.base",
   "compilerOptions": {
     "strict": true,
-    "jsx": "react-native"
+    "jsx": "react-native",
+    "target": "ES2020",
+    "module": "Node16",
+    "moduleResolution": "node16",
+    "customConditions": ["react-native"],
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": "./src",
+    "paths": {
+      "@components/*": ["components/*"],
+      "@screens/*": ["screens/*"],
+      "@routes/*": ["routes/*"],
+      "@services/*": ["services/*"],
+      "@styles/*": ["styles/*"],
+      "@mock/*": ["../mock/*"]
+    }
   },
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules"]
 }
