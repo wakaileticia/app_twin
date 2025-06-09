@@ -11,21 +11,18 @@ public class Reading {
     private Long id;
 
     private String sensorId;
-    private Double sensorValue;
+    private Double value;
     private LocalDateTime timestamp;
 
-    // Construtor vazio obrigatório para o JPA
     public Reading() {
     }
 
-    // Construtor com parâmetros (útil para inserir sensores iniciais)
-    public Reading(String sensorId, Double sensorValue, LocalDateTime timestamp) {
+    public Reading(String sensorId, Double value, LocalDateTime timestamp) {
         this.sensorId = sensorId;
-        this.sensorValue = sensorValue;
+        this.value = value;
         this.timestamp = timestamp;
     }
 
-    // Getters e Setters
     public Long getId() {
         return id;
     }
@@ -38,12 +35,12 @@ public class Reading {
         this.sensorId = sensorId;
     }
 
-    public Double getSensorValue() {
-        return sensorValue;
+    public Double getValue() {
+        return value;
     }
 
-    public void setSensorValue(Double sensorValue) {
-        this.sensorValue = sensorValue;
+    public void setValue(Double value) {
+        this.value = value;
     }
 
     public LocalDateTime getTimestamp() {
