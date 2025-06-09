@@ -1,4 +1,4 @@
-# Digital Twin - Robô Canguru (Entrega 2)
+# Digital Twin - Robô Canguru (Entrega 2) USUARIO = canguru.festo SENHA = fiap123
 
 Este projeto simula sensores de um robô pneumático (baseado no canguru da Festo) com backend em Java Spring Boot e frontend em React Native, focando na eficiência energética e manutenção preditiva.
 
