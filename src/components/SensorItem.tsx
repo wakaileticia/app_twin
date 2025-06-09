@@ -1,61 +1,80 @@
-import { useNavigation } from '@react-navigation/native';
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { Feather } from '@expo/vector-icons';
 
 type Props = {
   id: string;
   name: string;
   value: string;
   status: string;
+  onAlterar: () => void;
+  onDelete: () => void;
 };
 
-export const SensorItem = ({ id, name, value, status }: Props) => {
-  const navigation = useNavigation<any>();
-
-  const getIcon = (name: string) => {
-    if (name.includes('Pressão')) return 'gauge';
-    if (name.includes('Fluxo')) return 'water-pump';
-    if (name.includes('Temperatura')) return 'thermometer';
-    if (name.includes('Consumo')) return 'gas-cylinder';
-    if (name.includes('Eficiência')) return 'chart-line';
-    if (name.includes('Velocidade')) return 'speedometer';
-    return 'chip';
-  };
-
+export const SensorItem = ({ id, name, value, status, onAlterar, onDelete }: Props) => {
   return (
-    <TouchableOpacity
-      style={styles.container}
-      onPress={() => navigation.navigate('SensorDetail', { id })}
-    >
-      <MaterialCommunityIcons
-        name={getIcon(name)}
-        size={32}
-        color="#007aff"
-        style={styles.icon}
-      />
-      <View>
-        <Text style={styles.name}>{name}</Text>
-        <Text>{value}</Text>
-        <Text style={{ color: status === 'OK' ? 'green' : 'red' }}>{status}</Text>
+    <View style={styles.card}>
+      <Text style={styles.title}>{name}</Text>
+      <Text style={styles.value}>Valor: {value}</Text>
+      <Text style={[styles.status, status === 'OK' ? styles.ok : styles.alerta]}>
+        Status: {status}
+      </Text>
+
+      <View style={styles.buttons}>
+        <TouchableOpacity style={styles.btnBlue} onPress={onAlterar}>
+          <Feather name="edit" size={16} color="#fff" />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.btnRed} onPress={onDelete}>
+          <Feather name="trash-2" size={16} color="#fff" />
+        </TouchableOpacity>
       </View>
-    </TouchableOpacity>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 16,
-    borderBottomColor: '#eee',
-    borderBottomWidth: 1,
+  card: {
+    backgroundColor: '#fff',
+    width: '48%',
+    minHeight: 140,
+    borderRadius: 12,
+    padding: 10,
+    margin: 4,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 2 },
+    justifyContent: 'space-between',
   },
-  icon: {
-    marginRight: 12,
-  },
-  name: {
+  title: {
     fontWeight: 'bold',
-    fontSize: 16,
+    fontSize: 14,
+    marginBottom: 4,
+  },
+  value: {
+    fontSize: 12,
+    marginBottom: 2,
+  },
+  status: {
+    fontSize: 12,
+    marginBottom: 8,
+  },
+  ok: { color: 'green' },
+  alerta: { color: 'red' },
+  buttons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 4,
+  },
+  btnBlue: {
+    backgroundColor: '#007aff',
+    padding: 6,
+    borderRadius: 6,
+  },
+  btnRed: {
+    backgroundColor: '#ff3b30',
+    padding: 6,
+    borderRadius: 6,
   },
 });

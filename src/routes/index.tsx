@@ -6,6 +6,7 @@ import LoginScreen from '../screens/LoginScreen';
 import Home from '../screens/Home';
 import SensorDetail from '../screens/SensorDetail';
 import Settings from '../screens/Settings';
+import AddSensor from '../screens/AddSensor'; // Novo
 
 const Stack = createNativeStackNavigator();
 
@@ -17,6 +18,7 @@ export default function Routes() {
         <Stack.Screen name="Home" component={Home} />
         <Stack.Screen name="SensorDetail" component={SensorDetail} />
         <Stack.Screen name="Settings" component={Settings} />
+        <Stack.Screen name="AddSensor" component={AddSensor} options={{ title: 'Novo Sensor' }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

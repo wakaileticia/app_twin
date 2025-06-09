@@ -6,13 +6,22 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
-  Platform
+  Platform,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { login } from '../services/api';
 
+// Defina as rotas para tipagem segura
+type RootStackParamList = {
+  Login: undefined;
+  Home: undefined;
+  SensorDetail: { id: string };
+  Settings: undefined;
+};
+
 export default function LoginScreen() {
-  const navigation = useNavigation<any>();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -29,6 +38,7 @@ export default function LoginScreen() {
         return;
       }
 
+      console.log('Login bem-sucedido, redirecionando para Home');
       navigation.navigate('Home');
     } catch (error: any) {
       console.error('Erro de conexão:', error);
