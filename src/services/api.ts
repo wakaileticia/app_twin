@@ -1,64 +1,7 @@
 const API_BASE = 'http://localhost:8080/api';
 
 // ======================
-// SENSORES (CRUD)
-// ======================
-
-export async function getSensors() {
-  try {
-    const res = await fetch(`${API_BASE}/sensors`);
-    return await res.json();
-  } catch (error) {
-    console.error('Erro ao buscar sensores:', error);
-    return [];
-  }
-}
-
-export async function createSensor(sensor: {
-  id: string;
-  name: string;
-  unit: string;
-  status: string;
-}) {
-  try {
-    const res = await fetch(`${API_BASE}/sensors`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(sensor),
-    });
-    return await res.json();
-  } catch (error) {
-    console.error('Erro ao criar sensor:', error);
-  }
-}
-
-export async function updateSensor(id: string, sensor: {
-  name: string;
-  unit: string;
-  status: string;
-}) {
-  try {
-    const res = await fetch(`${API_BASE}/sensors/${id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(sensor),
-    });
-    return await res.json();
-  } catch (error) {
-    console.error(`Erro ao atualizar sensor ${id}:`, error);
-  }
-}
-
-export async function deleteSensor(id: string) {
-  try {
-    await fetch(`${API_BASE}/sensors/${id}`, { method: 'DELETE' });
-  } catch (error) {
-    console.error(`Erro ao deletar sensor ${id}:`, error);
-  }
-}
-
-// ======================
-// LEITURAS
+// LEITURAS (com valores)
 // ======================
 
 export async function fetchSensors() {
@@ -66,7 +9,6 @@ export async function fetchSensors() {
     const res = await fetch(`${API_BASE}/readings`);
     const data = await res.json();
 
-    console.log('Resposta da API (sensors):', data);
     return data.map((sensor: any) => ({
       id: sensor.id,
       name: sensor.name,
@@ -82,16 +24,11 @@ export async function fetchSensors() {
 
 export async function fetchSensorById(sensorId: string) {
   try {
-    const res = await fetch(`${API_BASE}/readings/${sensorId}`);
-    const data = await res.json();
+    const res = await fetch(`${API_BASE}/readings`);
+    const allSensors = await res.json();
 
-    return {
-      id: data.sensorId,
-      name: data.sensorId,
-      value: data.sensorValue,
-      status: 'OK',
-      history: [data.sensorValue],
-    };
+    const sensor = allSensors.find((s: any) => s.id === sensorId);
+    return sensor || null;
   } catch (error) {
     console.error(`Erro ao buscar sensor ${sensorId}:`, error);
     return null;

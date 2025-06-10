@@ -1,14 +1,22 @@
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator, NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import LoginScreen from '../screens/LoginScreen';
 import Home from '../screens/Home';
 import SensorDetail from '../screens/SensorDetail';
 import Settings from '../screens/Settings';
-import AddSensor from '../screens/AddSensor'; // Novo
+import AddSensor from '../screens/AddSensor';
 
-const Stack = createNativeStackNavigator();
+export type RootStackParamList = {
+  Login: undefined;
+  Home: undefined;
+  SensorDetail: { id: string };
+  Settings: undefined;
+  AddSensor: undefined;
+};
+
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function Routes() {
   return (

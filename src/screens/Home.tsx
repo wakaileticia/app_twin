@@ -1,21 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { FlatList, View, StyleSheet, Button } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { SensorItem } from '../components/SensorItem';
-import { getSensors, deleteSensor, postReading } from '../services/api';
+import { fetchSensors, postReading } from '../services/api'; // <- usar apenas funções de leitura com valores
 
 export default function Home() {
-  const [sensors, setSensors] = useState<any[]>([]);
+  const [sensors, setSensors] = React.useState<any[]>([]);
   const navigation = useNavigation<any>();
 
   const loadSensors = async () => {
-    const data = await getSensors();
+    const data = await fetchSensors(); // <- função correta com valores
     setSensors(data);
-  };
-
-  const handleDelete = async (sensorId: string) => {
-    await deleteSensor(sensorId);
-    await loadSensors();
   };
 
   const handleAlterarLeitura = async (sensorId: string) => {
@@ -37,14 +32,14 @@ export default function Home() {
       <FlatList
         data={sensors}
         keyExtractor={(item) => item.id}
-        numColumns={2} // <- grade com duas colunas
+        numColumns={2}
         renderItem={({ item }) => (
           <SensorItem
             id={item.id}
             name={item.name}
-            value={'-'}
+            value={item.value}
             status={item.status}
-            onDelete={() => handleDelete(item.id)}
+            onDelete={() => {}} // <- Sem delete por enquanto
             onAlterar={() => handleAlterarLeitura(item.id)}
           />
         )}

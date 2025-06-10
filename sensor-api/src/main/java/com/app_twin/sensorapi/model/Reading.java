@@ -7,19 +7,21 @@ import java.time.LocalDateTime;
 public class Reading {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String sensorId;
-    private Double value;
+
+    @Column(name = "sensor_value") // evita conflito com palavra reservada
+    private Double sensorValue;
+
     private LocalDateTime timestamp;
 
-    public Reading() {
-    }
+    public Reading() {}
 
-    public Reading(String sensorId, Double value, LocalDateTime timestamp) {
+    public Reading(String sensorId, Double sensorValue, LocalDateTime timestamp) {
         this.sensorId = sensorId;
-        this.value = value;
+        this.sensorValue = sensorValue;
         this.timestamp = timestamp;
     }
 
@@ -35,12 +37,12 @@ public class Reading {
         this.sensorId = sensorId;
     }
 
-    public Double getValue() {
-        return value;
+    public Double getSensorValue() {
+        return sensorValue;
     }
 
-    public void setValue(Double value) {
-        this.value = value;
+    public void setSensorValue(Double sensorValue) {
+        this.sensorValue = sensorValue;
     }
 
     public LocalDateTime getTimestamp() {

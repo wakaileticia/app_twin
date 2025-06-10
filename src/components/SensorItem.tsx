@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, GestureResponderEvent } from 'react-native';
 import { Feather } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 
 type Props = {
   id: string;
@@ -12,23 +13,41 @@ type Props = {
 };
 
 export const SensorItem = ({ id, name, value, status, onAlterar, onDelete }: Props) => {
+  const navigation = useNavigation<any>();
+
+  const handlePress = () => {
+    navigation.navigate('SensorDetail', { id });
+  };
+
+  const handleAlterar = (event: GestureResponderEvent) => {
+    event.stopPropagation();
+    onAlterar();
+  };
+
+  const handleDelete = (event: GestureResponderEvent) => {
+    event.stopPropagation();
+    onDelete();
+  };
+
   return (
-    <View style={styles.card}>
-      <Text style={styles.title}>{name}</Text>
-      <Text style={styles.value}>Valor: {value}</Text>
+    <TouchableOpacity style={styles.card} onPress={handlePress}>
+      <Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">
+        {name || 'Sensor'}
+      </Text>
+      <Text style={styles.value}>Valor: {value || '-'}</Text>
       <Text style={[styles.status, status === 'OK' ? styles.ok : styles.alerta]}>
-        Status: {status}
+        Status: {status || '-'}
       </Text>
 
       <View style={styles.buttons}>
-        <TouchableOpacity style={styles.btnBlue} onPress={onAlterar}>
+        <TouchableOpacity style={styles.btnBlue} onPress={handleAlterar}>
           <Feather name="edit" size={16} color="#fff" />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.btnRed} onPress={onDelete}>
+        <TouchableOpacity style={styles.btnRed} onPress={handleDelete}>
           <Feather name="trash-2" size={16} color="#fff" />
         </TouchableOpacity>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
