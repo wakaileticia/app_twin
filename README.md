@@ -1,60 +1,80 @@
-# App Twin – Monitoramento de Sensores Pneumáticos
+# Digital Twin - Robô Canguru (Entrega 2) USUARIO = canguru.festo SENHA = fiap123
 
-Aplicativo mobile desenvolvido com **React Native + Expo** para simular a leitura e acompanhamento de sensores de um robô pneumático da empresa **Festo**, inspirado no projeto **BionicKangaroo**.
-
-## 👩‍💻 Integrantes da Equipe
-
-| Nome                                   | RM     |
-|----------------------------------------|--------|
-| Ana Julia Oliveira da Silva            | 552578 |
-| Cléo Victtor Leal                      | 552571 |
-| Letícia Naomi Wakai                    | 99023  |
-| Murilo Watanabe Lympius                | 550454 |
-| Renê Stachetti Damasceno               | 98596  |
-| Vitor Rodrigues da Silva Oliveira      | 558849 |
-
-
-## 📱 Funcionalidades Implementadas
-
-### 🦿 Lista de Sensores (FlatList)
-- Apresenta sensores como: **pressão**, **fluxo**, **eficiência de recuperação**, **velocidade**, entre outros.
-- Cada item mostra:
-  - Nome do sensor
-  - Valor atual
-  - Status (OK ou Alerta)
-  - Ícone representativo
-
-### 📊 Detalhes do Sensor
-- Tela com nome, valor, status e histórico do sensor.
-- Histórico exibido em lista.
-- Botão “Atualizar” simula nova leitura via mock.
-
-### ⚙️ Tela de Configuração
-- Permite informar a URL da API (simulada).
-- Valor armazenado localmente (futuro: persistência com AsyncStorage).
+Este projeto simula sensores de um robô pneumático (baseado no canguru da Festo) com backend em Java Spring Boot e frontend em React Native, focando na eficiência energética e manutenção preditiva.
 
 ---
 
-## 🧪 Mock de Dados
-- Mock disponível em: `mock/sensors.json`
-- Simula sensores reais com histórico, status e valores variáveis.
+## 📦 Backend (Java + Spring Boot)
 
----
-
-## 💡 Tecnologias Utilizadas
-
-- [Expo](https://expo.dev/)
-- [React Native](https://reactnative.dev/)
-- [React Navigation](https://reactnavigation.org/)
-- [@expo/vector-icons](https://docs.expo.dev/guides/icons/)
-- Fetch nativo (sem Axios)
-
----
-
-## 🚀 Como Executar o Projeto
-
-1. Clone o repositório:
+### 🔧 Como rodar
 
 ```bash
-git clone https://github.com/seu-usuario/app-twin.git
-cd app-twin
+cd sensor-api
+./mvnw spring-boot:run
+```
+
+> 🔸 Requer Java 17+ e Maven Wrapper
+
+---
+
+### 🛢️ Banco de Dados H2 (modo "file")
+
+O arquivo de persistência está localizado em:
+
+```
+./sensor-api/data/readings.mv.db
+```
+
+---
+
+### 🔗 Endpoints disponíveis
+
+| Método | Endpoint                     | Descrição                           |
+|--------|------------------------------|-------------------------------------|
+| POST   | /api/readings                | Cria uma nova leitura               |
+| GET    | /api/readings                | Lista última leitura de cada sensor |
+| GET    | /api/readings/{sensorId}     | Lista todas as leituras do sensor   |
+| POST   | /api/login                   | Autenticação simples por usuário    |
+
+---
+
+### 📫 Exemplo de requisição via `curl`
+
+```bash
+curl -X POST http://localhost:8080/api/readings \
+  -H "Content-Type: application/json" \
+  -d '{"sensorId": "1", "sensorValue": 72.5, "timestamp": "2025-06-09T12:30:00"}'
+```
+
+---
+
+## 💻 Frontend (React Native com Expo)
+
+- Tela de login com validação
+- Lista de sensores em grade visual
+- Cadastro de novo sensor (com nome, unidade e status)
+- Exclusão de sensores
+- Integração com API Spring Boot
+
+> ⚙️ Base URL configurada: `http://localhost:8080/api`
+
+---
+
+## 👥 Integrantes
+
+| Nome Completo                        | RM     |
+|-------------------------------------|--------|
+| Ana Julia Oliveira da Silva         | 552578 |
+| Cléo Victtor Leal                   | 552571 |
+| Letícia Naomi Wakai                 | 99023  |
+| Murilo Watanabe Lympius             | 550454 |
+| Renê Stachetti Damasceno            | 98596  |
+| Vitor Rodrigues da Silva Oliveira   | 558849 |
+
+---
+
+## 🧠 Observações
+
+- O projeto atende os requisitos de modelagem da entidade `Reading` com `sensorId`, `value` e `timestamp`.
+- O CORS está habilitado globalmente.
+- H2 console acessível via `/h2-console`.
