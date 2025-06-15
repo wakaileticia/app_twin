@@ -3,4 +3,5 @@ package com.app_twin.sensorapi.repository;
 import com.app_twin.sensorapi.model.Sensor;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface SensorRepository extends JpaRepository<Sensor, String> {}
+public interface SensorRepository extends JpaRepository<Sensor, String> {
+}

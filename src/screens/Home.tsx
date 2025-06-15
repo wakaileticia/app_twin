@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { FlatList, View, StyleSheet, Button } from 'react-native';
+import { FlatList, View, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { SensorItem } from '../components/SensorItem';
 import { getSensors, deleteSensor, postReading } from '../services/api';
+import { Feather } from '@expo/vector-icons';
 
 export default function Home() {
   const [sensors, setSensors] = useState<any[]>([]);
@@ -32,17 +33,15 @@ export default function Home() {
 
   return (
     <View style={styles.container}>
-      <Button title="Novo Sensor" onPress={() => navigation.navigate('AddSensor')} />
-
       <FlatList
         data={sensors}
         keyExtractor={(item) => item.id}
-        numColumns={2} // <- grade com duas colunas
+        numColumns={2}
         renderItem={({ item }) => (
           <SensorItem
             id={item.id}
             name={item.name}
-            value={'-'}
+            value={item.value ?? '-'}
             status={item.status}
             onDelete={() => handleDelete(item.id)}
             onAlterar={() => handleAlterarLeitura(item.id)}
@@ -50,6 +49,13 @@ export default function Home() {
         )}
         contentContainerStyle={styles.list}
       />
+
+      <TouchableOpacity
+        style={styles.fab}
+        onPress={() => navigation.navigate('AddSensor')}
+      >
+        <Feather name="plus" size={24} color="#fff" />
+      </TouchableOpacity>
     </View>
   );
 }
@@ -62,8 +68,24 @@ const styles = StyleSheet.create({
     backgroundColor: '#f9f9f9',
   },
   list: {
-    paddingBottom: 20,
+    paddingBottom: 80,
     gap: 8,
     justifyContent: 'space-between',
+  },
+  fab: {
+    position: 'absolute',
+    bottom: 24,
+    right: 24,
+    backgroundColor: '#007aff',
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 3 },
   },
 });

@@ -1,7 +1,7 @@
 package com.app_twin.sensorapi.model;
 
-import jakarta.persistence.*;
-import java.util.List;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 
 @Entity
 public class Sensor {
@@ -13,7 +13,8 @@ public class Sensor {
     private String unit;
     private String status;
 
-    public Sensor() {}
+    public Sensor() {
+    }
 
     public Sensor(String id, String name, String unit, String status) {
         this.id = id;
@@ -22,16 +23,32 @@ public class Sensor {
         this.status = status;
     }
 
-    // Getters e setters
-    public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
+    // 🔸 Getters e Setters
+    public String getId() {
+        return id;
+    }
+    public void setId(String id) {
+        this.id = id;
+    }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    public String getUnit() { return unit; }
-    public void setUnit(String unit) { this.unit = unit; }
+    public String getUnit() {
+        return unit;
+    }
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
 
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
+    public String getStatus() {
+        return status;
+    }
+    public void setStatus(String status) {
+        this.status = status;
+    }
 }

@@ -73,6 +73,8 @@ export default function LoginScreen() {
             secureTextEntry={!showPassword}
             editable={!showError}
             placeholderTextColor="#999"
+            onSubmitEditing={handleLogin}   // 🔥 Executa ao apertar Enter
+            returnKeyType="done"            // 🔥 Muda o botão do teclado para "Concluir"
           />
           <TouchableOpacity
             style={styles.toggleButton}
