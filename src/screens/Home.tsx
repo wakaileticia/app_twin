@@ -50,11 +50,20 @@ export default function Home() {
         contentContainerStyle={styles.list}
       />
 
+      {/* Botão adicionar sensor */}
       <TouchableOpacity
         style={styles.fab}
         onPress={() => navigation.navigate('AddSensor')}
       >
         <Feather name="plus" size={24} color="#fff" />
+      </TouchableOpacity>
+
+      {/* Botão manutenção geral */}
+      <TouchableOpacity
+        style={styles.maintenanceButton}
+        onPress={() => navigation.navigate('PredictMaintenance')}
+      >
+        <Feather name="tool" size={22} color="#fff" />
       </TouchableOpacity>
     </View>
   );
@@ -68,7 +77,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f9f9f9',
   },
   list: {
-    paddingBottom: 80,
+    paddingBottom: 100,
     gap: 8,
     justifyContent: 'space-between',
   },
@@ -77,6 +86,22 @@ const styles = StyleSheet.create({
     bottom: 24,
     right: 24,
     backgroundColor: '#007aff',
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 3 },
+  },
+  maintenanceButton: {
+    position: 'absolute',
+    bottom: 24,
+    left: 24,
+    backgroundColor: '#28a745',
     width: 56,
     height: 56,
     borderRadius: 28,

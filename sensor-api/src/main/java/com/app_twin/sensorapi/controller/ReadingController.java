@@ -18,7 +18,7 @@ public class ReadingController {
         this.repository = repository;
     }
 
-    // 🔥 GET → Lista TODAS as leituras (Atende requisito da Entrega 2)
+    // 🔥 GET → Lista TODAS as leituras (Entrega 2)
     @GetMapping
     public List<Reading> getAllReadings() {
         return repository.findAll();
@@ -36,11 +36,16 @@ public class ReadingController {
             @PathVariable String sensorId,
             @RequestBody ReadingRequest request
     ) {
+        if (request.getValue() == null) {
+            throw new IllegalArgumentException("O valor da leitura não pode ser nulo.");
+        }
+
         Reading reading = new Reading(
                 sensorId,
                 request.getValue(),
                 LocalDateTime.now()
         );
+
         return repository.save(reading);
     }
 

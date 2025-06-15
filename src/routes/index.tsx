@@ -7,6 +7,7 @@ import Home from '../screens/Home';
 import SensorDetail from '../screens/SensorDetail';
 import Settings from '../screens/Settings';
 import AddSensor from '../screens/AddSensor';
+import PredictMaintenance from '../screens/PredictMaintenance'; // 🚀 Nova tela adicionada
 
 const Stack = createNativeStackNavigator();
 
@@ -50,6 +51,11 @@ export default function Routes() {
           name="AddSensor"
           component={AddSensor}
           options={{ title: 'Novo Sensor' }}
+        />
+        <Stack.Screen
+          name="PredictMaintenance"
+          component={PredictMaintenance}
+          options={{ title: 'Manutenção Preditiva' }} // 🚀 Título da nova tela
         />
       </Stack.Navigator>
     </NavigationContainer>

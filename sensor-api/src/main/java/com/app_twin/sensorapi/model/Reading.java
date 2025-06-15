@@ -3,6 +3,9 @@ package com.app_twin.sensorapi.model;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
+/**
+ * Classe que representa uma leitura de um sensor.
+ */
 @Entity
 public class Reading {
 
@@ -23,7 +26,6 @@ public class Reading {
         this.timestamp = timestamp;
     }
 
-    // 🔸 Getters e Setters
     public Long getId() {
         return id;
     }

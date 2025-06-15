@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { fetchSensorById, postReading } from '../services/api';
 import { Feather } from '@expo/vector-icons';
 
@@ -16,6 +16,15 @@ export default function SensorDetail({ route, navigation }: any) {
     const novaLeitura = Number((Math.random() * 100).toFixed(2));
     await postReading(id, novaLeitura);
     await loadSensor();
+  };
+
+  const handleManutencao = async () => {
+    Alert.alert(
+      'Manutenção Realizada',
+      `O sensor ${sensor.name} foi restaurado com sucesso.`,
+      [{ text: 'OK', onPress: () => navigation.goBack() }]
+    );
+    // 👉 Aqui no futuro podemos chamar uma API para resetar o status, health ou gerar um log.
   };
 
   useEffect(() => {
@@ -62,6 +71,11 @@ export default function SensorDetail({ route, navigation }: any) {
       <TouchableOpacity style={styles.btnBlue} onPress={handleNovaLeitura}>
         <Feather name="refresh-ccw" size={16} color="#fff" />
         <Text style={styles.btnText}>Gerar Nova Leitura</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.btnGreen} onPress={handleManutencao}>
+        <Feather name="tool" size={16} color="#fff" />
+        <Text style={styles.btnText}>Realizar Manutenção</Text>
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.btnBack} onPress={() => navigation.goBack()}>
@@ -127,7 +141,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 12,
     elevation: 3,
-    marginBottom: 12,
+    marginBottom: 10,
+  },
+  btnGreen: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#28a745',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 12,
+    elevation: 3,
+    marginBottom: 10,
   },
   btnText: {
     color: '#fff',

@@ -105,6 +105,16 @@ export async function postReading(sensorId: string, value: number) {
 // ======================
 // LOGIN (MOCK)
 // ======================
+export async function fetchPredictMaintenance() {
+  try {
+    const res = await fetch('http://localhost:8080/api/sensors/predict-maintenance');
+    return await res.json();
+  } catch (error) {
+    console.error('Erro ao buscar predição de manutenção:', error);
+    return [];
+  }
+}
+
 
 export async function login(username: string, password: string) {
   try {

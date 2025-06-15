@@ -23,51 +23,17 @@ public class SensorController {
         this.readingRepo = readingRepo;
     }
 
-    // 🔥 GET → Listar sensores com último valor e histórico
+    // 🔥 GET → Lista sensores
     @GetMapping
     public List<Map<String, Object>> getAllSensors() {
-        List<Sensor> sensors = sensorRepo.findAll();
-        return sensors.stream().map(sensor -> {
-            Map<String, Object> response = new HashMap<>();
-            response.put("id", sensor.getId());
-            response.put("name", sensor.getName());
-            response.put("unit", sensor.getUnit());
-            response.put("status", sensor.getStatus());
-
-            List<Reading> readings = readingRepo.findBySensorIdOrderByTimestampAsc(sensor.getId());
-            if (!readings.isEmpty()) {
-                Reading last = readings.get(readings.size() - 1);
-                response.put("value", last.getSensorValue());
-                response.put("history", readings.stream().map(Reading::getSensorValue).collect(Collectors.toList()));
-            } else {
-                response.put("value", null);
-                response.put("history", Collections.emptyList());
-            }
-
-            return response;
-        }).collect(Collectors.toList());
+        return sensorRepo.findAll().stream().map(this::buildSensorResponse).collect(Collectors.toList());
     }
 
-    // 🔥 GET → Obter um sensor específico (detalhe + histórico)
+    // 🔥 GET → Detalhe de sensor
     @GetMapping("/{id}")
     public Map<String, Object> getSensorById(@PathVariable String id) {
-        Optional<Sensor> sensorOpt = sensorRepo.findById(id);
-        if (sensorOpt.isEmpty()) {
-            throw new RuntimeException("Sensor não encontrado: " + id);
-        }
-
-        Sensor sensor = sensorOpt.get();
-        List<Reading> readings = readingRepo.findBySensorIdOrderByTimestampAsc(id);
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("id", sensor.getId());
-        response.put("name", sensor.getName());
-        response.put("unit", sensor.getUnit());
-        response.put("status", sensor.getStatus());
-        response.put("value", readings.isEmpty() ? null : readings.get(readings.size() - 1).getSensorValue());
-        response.put("history", readings.stream().map(Reading::getSensorValue).collect(Collectors.toList()));
-
-        return response;
+        Sensor sensor = sensorRepo.findById(id).orElseThrow(() -> new RuntimeException("Sensor não encontrado: " + id));
+        return buildSensorResponse(sensor);
     }
 
     // 🔹 POST → Criar sensor
@@ -89,23 +55,133 @@ public class SensorController {
         sensorRepo.deleteById(id);
     }
 
-    // 🔥 GET → Histórico de leituras de um sensor
+    // 🔥 GET → Histórico de leituras
     @GetMapping("/{id}/readings")
     public List<Reading> getReadingsBySensor(@PathVariable String id) {
         return readingRepo.findBySensorIdOrderByTimestampAsc(id);
     }
 
-    // 🔥 POST → Adicionar uma nova leitura ao sensor
+    // 🔥 POST → Adicionar leitura
     @PostMapping("/{id}/readings")
-    public Reading addReading(
-            @PathVariable String id,
-            @RequestBody ReadingRequest request
-    ) {
+    public Reading addReading(@PathVariable String id, @RequestBody ReadingRequest request) {
         Reading reading = new Reading(id, request.getValue(), LocalDateTime.now());
-        return readingRepo.save(reading);
+        readingRepo.save(reading);
+
+        Sensor sensor = sensorRepo.findById(id).orElseThrow(() -> new RuntimeException("Sensor não encontrado"));
+        String status = calculateStatus(id, request.getValue());
+        sensor.setStatus(status);
+        sensorRepo.save(sensor);
+
+        return reading;
     }
 
-    // 🔹 Classe interna para o corpo da requisição de leitura
+    // 🔧 POST → Realizar manutenção (Resetar health e status)
+    @PostMapping("/{id}/maintenance")
+    public Sensor performMaintenance(@PathVariable String id) {
+        Sensor sensor = sensorRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Sensor não encontrado"));
+
+        sensor.setHealth(100.0);
+        sensor.setStatus("OK");
+        sensorRepo.save(sensor);
+
+        return sensor;
+    }
+
+    // 🔥 Predictive Maintenance (Protótipo de IA)
+    @GetMapping("/predict-maintenance")
+    public List<Map<String, Object>> predictMaintenance() {
+        List<Sensor> sensors = sensorRepo.findAll();
+
+        return sensors.stream().map(sensor -> {
+            Map<String, Object> result = new HashMap<>();
+            result.put("id", sensor.getId());
+            result.put("name", sensor.getName());
+
+            List<Reading> readings = readingRepo.findBySensorIdOrderByTimestampAsc(sensor.getId());
+
+            if (!readings.isEmpty()) {
+                Double lastValue = readings.get(readings.size() - 1).getSensorValue();
+                String status = calculateStatus(sensor.getId(), lastValue);
+                result.put("lastValue", lastValue);
+                result.put("status", status);
+
+                if (status.equals("Crítico") || status.equals("Alerta")) {
+                    result.put("prediction", "🚨 Alta probabilidade de necessidade de manutenção");
+                } else {
+                    result.put("prediction", "✅ Funcionamento dentro dos padrões");
+                }
+            } else {
+                result.put("prediction", "⚠️ Sem dados suficientes");
+            }
+
+            return result;
+        }).collect(Collectors.toList());
+    }
+
+    // 🔧 Build response com histórico
+    private Map<String, Object> buildSensorResponse(Sensor sensor) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("id", sensor.getId());
+        response.put("name", sensor.getName());
+        response.put("unit", sensor.getUnit());
+        response.put("health", sensor.getHealth());
+
+        List<Reading> readings = readingRepo.findBySensorIdOrderByTimestampAsc(sensor.getId());
+
+        if (!readings.isEmpty()) {
+            Double lastValue = readings.get(readings.size() - 1).getSensorValue();
+            response.put("value", lastValue);
+            response.put("status", calculateStatus(sensor.getId(), lastValue));
+            response.put("history", readings.stream().map(Reading::getSensorValue).collect(Collectors.toList()));
+        } else {
+            response.put("value", null);
+            response.put("status", "Sem Dados");
+            response.put("history", Collections.emptyList());
+        }
+
+        return response;
+    }
+
+    // 🔥 Status calculation
+    private String calculateStatus(String sensorId, Double value) {
+        if (value == null) return "Sem Dados";
+
+        switch (sensorId) {
+            case "1":
+                return checkRange(value, 5, 7, 4.5, 7.5);
+            case "2":
+                return checkMax(value, 20, 25);
+            case "3":
+                return checkRange(value, 6.5, 8, 6, 8.5);
+            case "4":
+                return checkMax(value, 0.2, 0.5);
+            case "5":
+                return checkMax(value, 40, 50);
+            case "6":
+                return "OK";
+            case "7":
+                return checkMax(value, 150, 180);
+            case "8":
+                return checkMax(value, 250, 280);
+            default:
+                return "Desconhecido";
+        }
+    }
+
+    private String checkRange(Double value, double minOk, double maxOk, double minAlerta, double maxAlerta) {
+        if (value >= minOk && value <= maxOk) return "OK";
+        if ((value >= minAlerta && value < minOk) || (value > maxOk && value <= maxAlerta)) return "Alerta";
+        return "Crítico";
+    }
+
+    private String checkMax(Double value, double maxOk, double maxAlerta) {
+        if (value <= maxOk) return "OK";
+        if (value <= maxAlerta) return "Alerta";
+        return "Crítico";
+    }
+
+    // 📨 Classe de request de leitura
     public static class ReadingRequest {
         private Double value;
 

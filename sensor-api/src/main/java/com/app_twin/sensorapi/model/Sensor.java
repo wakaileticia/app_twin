@@ -1,8 +1,11 @@
 package com.app_twin.sensorapi.model;
-
+import java.util.List;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 
+/**
+ * Classe que representa um sensor no sistema pneumático.
+ */
 @Entity
 public class Sensor {
 
@@ -12,18 +15,19 @@ public class Sensor {
     private String name;
     private String unit;
     private String status;
+    private double health;  // Vida útil
 
     public Sensor() {
     }
 
-    public Sensor(String id, String name, String unit, String status) {
+    public Sensor(String id, String name, String unit, String status, double health) {
         this.id = id;
         this.name = name;
         this.unit = unit;
         this.status = status;
+        this.health = health;
     }
 
-    // 🔸 Getters e Setters
     public String getId() {
         return id;
     }
@@ -50,5 +54,12 @@ public class Sensor {
     }
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public double getHealth() {
+        return health;
+    }
+    public void setHealth(double health) {
+        this.health = health;
     }
 }
